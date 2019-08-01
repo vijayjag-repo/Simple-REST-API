@@ -72,6 +72,19 @@ app.route("/articles/:articleTitle")
             res.send("Nothing Found");
         }
     });
+})
+.put(function(req,res){
+    Article.update({title: req.params.articleTitle},
+        {title: req.body.title,content: req.body.content},
+        {overwrite: true},
+        function(err){
+            if(!err){
+                res.send("Successfully update");
+            }
+            else{
+                res.send(err);
+            }
+        });
 });
 
 
