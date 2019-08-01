@@ -19,7 +19,7 @@ const articleSchema = {
 const Article = mongoose.model("Article",articleSchema);
 
 
-//chaining
+//chaining articles
 app.route("/articles")
 .get(function(req,res){
     //find in db
@@ -58,6 +58,22 @@ app.route("/articles")
         }
     });
 });
+
+
+//chaining specific article
+app.route("/articles/:articleTitle")
+.get(function(req,res){
+    //find one specific article
+    Article.findOne({title: req.params.articleTitle},function(err,found){
+        if(found){
+            res.send(found);
+        }
+        else{
+            res.send("Nothing Found");
+        }
+    });
+});
+
 
 app.listen(3000,function(req,res){
     console.log("Server up on 3000");
