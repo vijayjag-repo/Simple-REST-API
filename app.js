@@ -79,13 +79,27 @@ app.route("/articles/:articleTitle")
         {overwrite: true},
         function(err){
             if(!err){
-                res.send("Successfully update");
+                res.send("Successfully updated");
             }
             else{
                 res.send(err);
             }
         });
-});
+})
+.patch(function(req,res){
+    Article.update(
+        {title: req.params.articleTitle},
+        {$set: req.body}, //set only the fields mentioned by the user
+        function(err){
+            if(!err){
+                res.send("Successfully Updated");
+            }
+            else{
+                res.send(err);
+            }
+        }
+    );
+})
 
 
 app.listen(3000,function(req,res){
