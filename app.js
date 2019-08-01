@@ -20,7 +20,12 @@ const Article = mongoose.model("Article",articleSchema);
 
 app.get("/articles",function(req,res){
     Article.find(function(err,found){
-        res.send(found);
+        if(!err){
+            res.send(found);
+        }
+        else{
+            res.send(err);
+        }
     });
 });
 
