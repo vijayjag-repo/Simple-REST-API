@@ -9,8 +9,10 @@ app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
+//connect to mongodb local server 
 mongoose.connect("mongodb://localhost:27017/wikiDB",{useNewUrlParser: true});
 
+//schema for article
 const articleSchema = {
     title: String,
     content: String
@@ -22,7 +24,7 @@ const Article = mongoose.model("Article",articleSchema);
 //chaining articles
 app.route("/articles")
 .get(function(req,res){
-    //find in db
+    //find all article in db
     Article.find(function(err,found){
         if(!err){
             res.send(found);
@@ -33,7 +35,7 @@ app.route("/articles")
     });
 })
 .post(function(req,res){
-    //save to db
+    //save/post to db
     const newArticle = new Article({
         title: req.body.title,
         content: req.body.content
@@ -48,7 +50,7 @@ app.route("/articles")
     });
 })
 .delete(function(req,res){
-    //delete all
+    //delete all content in db
     Article.deleteMany(function(err){
         if(!err){
             res.send("Successfully deleted the articles");
@@ -63,7 +65,7 @@ app.route("/articles")
 //chaining specific article
 app.route("/articles/:articleTitle")
 .get(function(req,res){
-    //find one specific article
+    //find one specific article in db
     Article.findOne({title: req.params.articleTitle},function(err,found){
         if(found){
             res.send(found);
@@ -74,6 +76,7 @@ app.route("/articles/:articleTitle")
     });
 })
 .put(function(req,res){
+    //change one article entirely in db
     Article.update({title: req.params.articleTitle},
         {title: req.body.title,content: req.body.content},
         {overwrite: true},
@@ -87,6 +90,7 @@ app.route("/articles/:articleTitle")
         });
 })
 .patch(function(req,res){
+    //update only certains portions of one article in db
     Article.update(
         {title: req.params.articleTitle},
         {$set: req.body}, //set only the fields mentioned by the user
@@ -100,6 +104,20 @@ app.route("/articles/:articleTitle")
         }
     );
 })
+.delete(function(req,res){
+    //delete only one article in db
+    Article.deleteOne({
+        title: req.params.articleTitle},
+        function(err){
+            if(!err){
+                res.send("Successfully deleted");
+            }
+            else{
+                res.send(err);
+            }
+        }
+    ); 
+});
 
 
 app.listen(3000,function(req,res){
