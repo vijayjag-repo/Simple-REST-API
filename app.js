@@ -19,6 +19,7 @@ const articleSchema = {
 const Article = mongoose.model("Article",articleSchema);
 
 app.get("/articles",function(req,res){
+    //find in db
     Article.find(function(err,found){
         if(!err){
             res.send(found);
@@ -29,6 +30,21 @@ app.get("/articles",function(req,res){
     });
 });
 
+app.post("/articles",function(req,res){
+    //save to db
+    const newArticle = new Article({
+        title: req.body.title,
+        content: req.body.content
+    });
+    newArticle.save(function(err){
+        if(!err){
+            res.sendStatus("Successfully added");
+        }
+        else{
+            res.send(err);
+        }
+    });
+});
 
 app.listen(3000,function(req,res){
     console.log("Server up on 3000");
